@@ -1,9 +1,11 @@
+#include <cstddef>
 #include <fstream>
 #include <iostream>
 #include <string>
 
 int	main(int argc, char **argv)
 {
+	/*
 	{
 		if (argc == 2)
 		{
@@ -30,8 +32,12 @@ int	main(int argc, char **argv)
 		}
 			
 	}
-	/*
+	*/
 	{
+		(void)argc;
+		(void)argv;
+
+
 		std::ifstream	baseFile("data.csv");
 
 		if (!baseFile.is_open())
@@ -41,11 +47,14 @@ int	main(int argc, char **argv)
 		}
 
 		std::string	line;
+		std::getline(baseFile, line);
 		while (std::getline(baseFile, line))
-			std::cout << line << std::endl;
+		{
+			std::cout << line.substr(0, line.find(",")) << " ---> " << 
+				line.substr(line.find(",") + 1, line.length()) << std::endl;
+		}
 
 		baseFile.close();
 	}
-	*/
 	return (0);
 }
