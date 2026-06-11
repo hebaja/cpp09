@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include "BitcoinExchange.hpp"
 
 int	main(int argc, char **argv)
 {
@@ -37,22 +38,20 @@ int	main(int argc, char **argv)
 		(void)argc;
 		(void)argv;
 
-
+		BitcoinExchange be;
 		std::ifstream	baseFile("data.csv");
+		
 
 		if (!baseFile.is_open())
 		{
 			std::cerr << "Error: could not open csv file." << std::endl;
 			return (1);
 		}
+		
+		be.consumeCsv(baseFile);
 
-		std::string	line;
-		std::getline(baseFile, line);
-		while (std::getline(baseFile, line))
-		{
-			std::cout << line.substr(0, line.find(",")) << " ---> " << 
-				line.substr(line.find(",") + 1, line.length()) << std::endl;
-		}
+		be.readData();
+
 
 		baseFile.close();
 	}
