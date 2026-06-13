@@ -22,6 +22,11 @@ int	main(int argc, char **argv)
 				std::cerr << "Error: could not open csv file." << std::endl;
 				return (1);
 			}
+			if (!inputFile.is_open())
+			{
+				std::cerr << "Error: could not open input file." << std::endl;
+				return (1);
+			}
 			
 			be.consumeCsv(baseFile);
 			
