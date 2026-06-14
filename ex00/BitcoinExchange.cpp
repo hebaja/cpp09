@@ -38,24 +38,7 @@ void	trim(std::string &str)
 		str = str.substr(start, end - start + 1);
 }
 
-int	digitCount(int num)
-{
-	int	count;
-
-	count = 0;
-	if (num == 0)
-		return (1);
-	if (num < 0)
-		return (-1);
-	while (num > 0)
-	{
-		num = num / 10;
-		count++;
-	}
-	return (count);
-}
-
-bool	parseYear(std::string date)
+int	parseYear(std::string date)
 {
 	int			num_year;
 	std::string	str_year;
@@ -65,26 +48,60 @@ bool	parseYear(std::string date)
 	{
 		str_year = date.substr(0, pos);
 		if (str_year.length() != 4 || str_year.find_last_not_of("0123456789") != std::string::npos)
-			return (false);
-		std::istringstream iss(date);
+			return (-1);
+		std::istringstream iss(str_year);
 		if (iss >> num_year)
-		{
-			std::cout << num_year << std::endl;
-			return (true);
-		}
-		return (false);
+			return (num_year);
 	}
-	return (false);
+	return (-1);
+}
+
+int	parseMonth(std::string date)
+{
+	int			num_mon;
+	std::size_t	pos;
+	std::string	str_mon;
+
+	pos = date.find("-");
+	if (pos != std::string::npos)
+	{
+		if (date.at(pos + 3) != '-')
+			return (false);
+		str_mon = date.substr(pos + 1, 2);
+		std::istringstream iss(str_mon);
+		if (iss >> num_mon)
+		{
+			if (num_mon >= 1 && num_mon <= 12)
+				return (num_mon);
+		}
+	}
+	return (-1);
+}
+
+int	parseDay(std::string date, int year, int month)
+{
+
+
 }
 
 bool	parseDate(std::string date)
 {
-	if (!parseYear(date))
+	int	year;
+	int	month;
+	int	day;
+
+	year = parseYear(date);
+	if (year < 0)
 		return (false);
-	// if (!parseMonth(date))
-	// 	return (false);
-	// if (!parseDay(date))
-	// 	return (false);
+	month = parseMonth(date);
+	if (month < 0)
+		return (false);
+	day = parseDay(date, year, month);
+		return (false);
+	if (day < 0)
+		return (false);
+	
+	std::cout << "*** " << year << " *** " << month << std::endl;
 
 
 
