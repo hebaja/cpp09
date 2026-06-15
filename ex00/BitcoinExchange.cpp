@@ -143,7 +143,24 @@ bool	parseDate(std::string date)
 	if (day < 0)
 		return (false);
 	
-	std::cout << "*** " << year << " *** " << month << " *** "<< day << std::endl;
+	return (true);
+}
+
+float	parseValue(std::string value)
+{
+	float	num_value;
+
+	std::istringstream iss(value);
+	if (iss >> num_value)
+	{
+		if (num_value >= 0.0 && num_value <= 1000.0)
+			return (num_value);
+	}
+	return (-1);
+}
+
+bool	getit()
+{
 	return (true);
 }
 
@@ -152,6 +169,7 @@ void	BitcoinExchange::treatInput(std::ifstream &file)
 	std::string	line;
 	std::string	date;
 	std::string	value;
+	float		num_value;
 
 	std::getline(file, line);
 	while (std::getline(file, line))
@@ -165,16 +183,37 @@ void	BitcoinExchange::treatInput(std::ifstream &file)
 			trim(date);
 			trim(value);
 			if (!parseDate(date))
-				std::cerr << "Error: bad input => " << line << std::endl;
-
-			// std::cout << date << " || " << value << std::endl;
+			{
+				std::cout << "Error: bad input => " << line << std::endl;
+				continue ;
+			}
+			num_value = parseValue(value);
+			if (num_value < 0)
+			{
+				std::cout << "Error: bad input => " << line << std::endl;
+				continue ;
+			}
+				
 		}
 		else
 		{
-			std::cerr << "Error: bad input => " << line << std::endl;
+			std::cout << "Error: bad input => " << line << std::endl;
+			continue ;
 		}
-		// TODO COMPARE VALUES HERE
-		// std::cout << value << std::endl;
+
+		std::map<std::string, std::string>::iterator it = _data.upper_bound(date);
+		if (it != _data.begin())
+		{
+			--it;
+			float f;
+			std::istringstream iss(it->second);
+			if (iss >> f)
+				std::cout << it->first << " => " << num_value << " = " << f * num_value << std::endl;
+		}
+		else
+		{
+			std::cout << "Error: bad input => " << line << std::endl;
+		}
 	}
 }
 
