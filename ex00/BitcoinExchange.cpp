@@ -44,6 +44,7 @@ int	parseYear(std::string date)
 	std::string	str_year;
 	std::size_t	pos = date.find("-");
 	
+	pos = date.find("-");
 	if (pos != std::string::npos)
 	{
 		str_year = date.substr(0, pos);
@@ -59,14 +60,14 @@ int	parseYear(std::string date)
 int	parseMonth(std::string date)
 {
 	int			num_mon;
-	std::size_t	pos;
 	std::string	str_mon;
+	std::size_t	pos;
 
 	pos = date.find("-");
 	if (pos != std::string::npos)
 	{
 		if (date.at(pos + 3) != '-')
-			return (false);
+			return (-1);
 		str_mon = date.substr(pos + 1, 2);
 		std::istringstream iss(str_mon);
 		if (iss >> num_mon)
@@ -78,10 +79,52 @@ int	parseMonth(std::string date)
 	return (-1);
 }
 
+bool	isLeapYear(int year)
+{
+	if ((year % 400 == 0) || ((year % 4 == 0) && (year % 100 != 0)))
+		return (true);
+	return (false);
+}
+
 int	parseDay(std::string date, int year, int month)
 {
+	int			num_day;
+	std::string	str_day;
+	std::size_t	pos;
 
-
+	(void)year;
+	(void)month;
+	
+	pos = date.find("-");
+	if (pos != std::string::npos)
+	{
+		str_day = date.substr(pos + 4, date.length() - (pos + 4));
+		std::istringstream iss(str_day);
+		if (iss >> num_day)
+		{
+			if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12)
+			{
+				if (num_day >= 1 && num_day <= 31)
+					return (num_day);
+			}
+			else if (month == 2)
+			{
+				if (isLeapYear(year))
+				{
+					if (num_day >= 1 && num_day <= 29)
+						return (num_day);
+				}
+				else
+				{
+					if (num_day >= 1 && num_day <= 28)
+						return (num_day);
+				}
+			}
+			else if (num_day >= 1 && num_day <= 30)
+				return (num_day);
+		}
+	}
+	return (-1);
 }
 
 bool	parseDate(std::string date)
@@ -97,17 +140,10 @@ bool	parseDate(std::string date)
 	if (month < 0)
 		return (false);
 	day = parseDay(date, year, month);
-		return (false);
 	if (day < 0)
 		return (false);
 	
-	std::cout << "*** " << year << " *** " << month << std::endl;
-
-
-
-
-	/*
-	*/
+	std::cout << "*** " << year << " *** " << month << " *** "<< day << std::endl;
 	return (true);
 }
 
