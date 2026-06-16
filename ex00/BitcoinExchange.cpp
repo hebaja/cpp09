@@ -19,11 +19,18 @@ BitcoinExchange::~BitcoinExchange(){}
 
 void	BitcoinExchange::consumeCsv(std::ifstream &file)
 {
+	double		val;
 	std::string	line;
 
 	std::getline(file, line);
 	while (std::getline(file, line))
-		_data[line.substr(0, line.find(","))] = line.substr(line.find(",") + 1, line.length());
+	{
+		std::istringstream iss(line.substr(line.find(",") + 1, line.length()));
+		if (iss >> val)
+			_data[line.substr(0, line.find(","))] = val;
+		else
+			std::cerr << "Error: value too complex: " << val << std::endl;
+	}
 }
 
 void	trim(std::string &str)
@@ -169,7 +176,8 @@ double	parseValue(std::string value)
 		else
 			return (num_value);
 	}
-	std::cerr << "Error: problem parsing value: " << value << std::endl;
+	else
+		std::cerr << "Error: problem parsing value: " << value << std::endl;
 	return (-1);
 }
 
@@ -202,17 +210,11 @@ void	BitcoinExchange::treatInput(std::ifstream &file)
 			std::cerr << "Error: bad input => " << line << std::endl;
 			continue ;
 		}
-
-		std::map<std::string, std::string>::iterator it = _data.upper_bound(date);
+		std::map<std::string, double>::iterator it = _data.upper_bound(date);
 		if (it != _data.begin())
 		{
 			--it;
-			double f;
-			std::istringstream iss(it->second);
-			if (iss >> f)
-				std::cout << it->first << " => " << num_value << " = " << f * num_value << std::endl;
-			else
-				std::cerr << "Error: value too complex: " << it->second << std::endl;
+			std::cout << date << " => " << num_value << " = " << it->second * num_value << std::endl;
 		}
 		else
 			std::cerr << "Error: too far a date => " << date << std::endl;

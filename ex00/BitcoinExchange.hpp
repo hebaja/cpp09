@@ -1,13 +1,14 @@
 #pragma once
 
 #include <fstream>
+#include <iostream>
 #include <map>
 #include <string>
 
 class BitcoinExchange
 {
 private:
-	std::map<std::string, std::string> _data;
+	std::map<std::string, double> _data;
 
 public:
 	BitcoinExchange();
@@ -17,4 +18,10 @@ public:
 
 	void	consumeCsv(std::ifstream &file);
 	void	treatInput(std::ifstream &file);
+
+	void	readData() {
+		for (std::map<std::string, double>::iterator it = _data.begin(); it != _data.end(); ++it) {
+			std::cout << it->first << " - "<< it->second << std::endl;
+		}
+	}
 };
