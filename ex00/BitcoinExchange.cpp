@@ -153,15 +153,14 @@ float	parseValue(std::string value)
 	std::istringstream iss(value);
 	if (iss >> num_value)
 	{
-		if (num_value >= 0.0 && num_value <= 1000.0)
+		if (num_value < 0.0)
+			std::cout << "Error: Not a positive number." << std::endl;
+		else if (num_value > 1000.0)
+			std::cout << "Error: too large a number." << std::endl;
+		else
 			return (num_value);
 	}
 	return (-1);
-}
-
-bool	getit()
-{
-	return (true);
 }
 
 void	BitcoinExchange::treatInput(std::ifstream &file)
@@ -189,10 +188,7 @@ void	BitcoinExchange::treatInput(std::ifstream &file)
 			}
 			num_value = parseValue(value);
 			if (num_value < 0)
-			{
-				std::cout << "Error: bad input => " << line << std::endl;
 				continue ;
-			}
 				
 		}
 		else
