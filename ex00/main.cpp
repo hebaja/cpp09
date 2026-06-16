@@ -9,9 +9,6 @@ int	main(int argc, char **argv)
 	{
 		if (argc == 2)
 		{
-			(void)argc;
-			(void)argv;
-
 			BitcoinExchange be;
 			std::ifstream	baseFile("data.csv");
 			std::ifstream	inputFile(argv[1]);
@@ -37,6 +34,11 @@ int	main(int argc, char **argv)
 
 			baseFile.close();
 			inputFile.close();
+		}
+		else
+		{
+			std::cerr << "Error: could not open file." << std::endl;
+			return (1);
 		}
 	}
 	return (0);

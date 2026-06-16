@@ -6,14 +6,12 @@
 
 BitcoinExchange::BitcoinExchange() : _data() {}
 
-BitcoinExchange::BitcoinExchange(const BitcoinExchange &other)
-{
-	(void)other;
-}
+BitcoinExchange::BitcoinExchange(const BitcoinExchange &other) : _data(other._data) {}
 
 BitcoinExchange& BitcoinExchange::operator=(const BitcoinExchange &other)
 {
-	(void)other;
+	if (this != &other)
+		_data = other._data;
 	return (*this);
 }
 
@@ -49,11 +47,15 @@ int	parseYear(std::string date)
 	{
 		str_year = date.substr(0, pos);
 		if (str_year.length() != 4 || str_year.find_last_not_of("0123456789") != std::string::npos)
+		{
+			std::cerr << "Error: malformed year: " << date << std::endl;
 			return (-1);
+		}
 		std::istringstream iss(str_year);
 		if (iss >> num_year)
 			return (num_year);
 	}
+	std::cerr << "Error: problem parsing year: " << date <<std::endl;
 	return (-1);
 }
 
@@ -66,9 +68,12 @@ int	parseMonth(std::string date)
 	pos = date.find("-");
 	if (pos != std::string::npos)
 	{
-		if (date.at(pos + 3) != '-')
-			return (-1);
 		str_mon = date.substr(pos + 1, 2);
+		if (date.at(pos + 3) != '-')
+		{
+			std::cerr << "Error: malformed month: " << date << std::endl;
+			return (-1);
+		}
 		std::istringstream iss(str_mon);
 		if (iss >> num_mon)
 		{
@@ -76,6 +81,7 @@ int	parseMonth(std::string date)
 				return (num_mon);
 		}
 	}
+	std::cerr << "Error: problem parsing month: " << date << std::endl;
 	return (-1);
 }
 
@@ -92,9 +98,6 @@ int	parseDay(std::string date, int year, int month)
 	std::string	str_day;
 	std::size_t	pos;
 
-	(void)year;
-	(void)month;
-	
 	pos = date.find("-");
 	if (pos != std::string::npos)
 	{
@@ -113,15 +116,21 @@ int	parseDay(std::string date, int year, int month)
 				{
 					if (num_day >= 1 && num_day <= 29)
 						return (num_day);
+					else
+						std::cerr << "Error: wrong day for leap year: " << date << std::endl;
 				}
 				else
 				{
 					if (num_day >= 1 && num_day <= 28)
 						return (num_day);
+					else
+						std::cerr << "Error: wrong day: " << date << std::endl;
 				}
 			}
 			else if (num_day >= 1 && num_day <= 30)
 				return (num_day);
+			else
+				std::cerr << "Error: wrong day: " << date << std::endl;
 		}
 	}
 	return (-1);
@@ -146,20 +155,21 @@ bool	parseDate(std::string date)
 	return (true);
 }
 
-float	parseValue(std::string value)
+double	parseValue(std::string value)
 {
-	float	num_value;
+	double	num_value;
 
 	std::istringstream iss(value);
 	if (iss >> num_value)
 	{
 		if (num_value < 0.0)
-			std::cout << "Error: Not a positive number." << std::endl;
+			std::cerr << "Error: Not a positive number." << std::endl;
 		else if (num_value > 1000.0)
-			std::cout << "Error: too large a number." << std::endl;
+			std::cerr << "Error: too large a number." << std::endl;
 		else
 			return (num_value);
 	}
+	std::cerr << "Error: problem parsing value: " << value << std::endl;
 	return (-1);
 }
 
@@ -168,7 +178,7 @@ void	BitcoinExchange::treatInput(std::ifstream &file)
 	std::string	line;
 	std::string	date;
 	std::string	value;
-	float		num_value;
+	double		num_value;
 
 	std::getline(file, line);
 	while (std::getline(file, line))
@@ -182,18 +192,14 @@ void	BitcoinExchange::treatInput(std::ifstream &file)
 			trim(date);
 			trim(value);
 			if (!parseDate(date))
-			{
-				std::cout << "Error: bad input => " << line << std::endl;
 				continue ;
-			}
 			num_value = parseValue(value);
 			if (num_value < 0)
 				continue ;
-				
 		}
 		else
 		{
-			std::cout << "Error: bad input => " << line << std::endl;
+			std::cerr << "Error: bad input => " << line << std::endl;
 			continue ;
 		}
 
@@ -201,20 +207,14 @@ void	BitcoinExchange::treatInput(std::ifstream &file)
 		if (it != _data.begin())
 		{
 			--it;
-			float f;
+			double f;
 			std::istringstream iss(it->second);
 			if (iss >> f)
 				std::cout << it->first << " => " << num_value << " = " << f * num_value << std::endl;
+			else
+				std::cerr << "Error: value too complex: " << it->second << std::endl;
 		}
 		else
-		{
-			std::cout << "Error: bad input => " << line << std::endl;
-		}
+			std::cerr << "Error: too far a date => " << date << std::endl;
 	}
-}
-
-void BitcoinExchange::readData()
-{
-	for (std::map<std::string, std::string>::iterator it = _data.begin(); it != _data.end(); ++it)
-		std::cout << it->first << " *** " << it->second << std::endl;
 }

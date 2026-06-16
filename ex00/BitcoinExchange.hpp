@@ -17,6 +17,4 @@ public:
 
 	void	consumeCsv(std::ifstream &file);
 	void	treatInput(std::ifstream &file);
-	void	readData();
-
 };
