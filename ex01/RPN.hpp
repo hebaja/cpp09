@@ -5,7 +5,7 @@
 class RPN
 {
 private:
-	std::stack<unsigned int>	_exp;
+	std::stack<int>	_exp;
 
 public:
 	RPN();
@@ -13,7 +13,7 @@ public:
 	RPN& operator=(const RPN &other);
 	~RPN();
 
-	void			add(char &c);
-	void			calculate(char &c);
-	unsigned int	getResult();
+	void	add(char &c);
+	void	calculate(char &c);
+	void	showResult();
 };

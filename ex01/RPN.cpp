@@ -1,5 +1,6 @@
 #include "RPN.hpp"
 #include <iostream>
+#include <stdexcept>
 
 RPN::RPN() : _exp() {}
 
@@ -18,9 +19,13 @@ void	RPN::calculate(char &c)
 	int	a;
 	int	b;
 	int	res;
-	
+
+	if (_exp.empty())
+		throw std::runtime_error("Error: not enough operands");
 	a = _exp.top();
 	_exp.pop();
+	if (_exp.empty())
+		throw std::runtime_error("Error: not enough operands");
 	b = _exp.top();
 	_exp.pop();
 	switch (c) {
@@ -35,17 +40,21 @@ void	RPN::calculate(char &c)
 			break ;
 		case '/':
 			if (a == 0)
-			{
-				std::cerr << "Error: division by zero";
-				break ;
-			}
+				throw std::runtime_error("Error: division by zero");
 			res = b / a;
 			break ;
 	}
 	_exp.push(res);
 }
 
-unsigned int	RPN::getResult()
+void	RPN::showResult()
 {
-	return (_exp.top());
+	int	res;
+
+	res = _exp.top();
+	_exp.pop();
+	if (!_exp.empty())
+		throw std::runtime_error("Error: malformed RPN expression");
+	else
+		std::cout << res << std::endl;
 }
