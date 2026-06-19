@@ -1,4 +1,5 @@
 #include "RPN.hpp"
+#include <iostream>
 
 RPN::RPN() : _exp() {}
 
@@ -6,7 +7,7 @@ RPN::~RPN() {}
 
 void	RPN::add(char &c)
 {
-	unsigned int	num;
+	int	num;
 	
 	num = static_cast<unsigned int>(static_cast<unsigned int>(c)) - 48;
 	_exp.push(num);
@@ -14,9 +15,9 @@ void	RPN::add(char &c)
 
 void	RPN::calculate(char &c)
 {
-	unsigned int	a;
-	unsigned int	b;
-	unsigned int	res;
+	int	a;
+	int	b;
+	int	res;
 	
 	a = _exp.top();
 	_exp.pop();
@@ -24,19 +25,21 @@ void	RPN::calculate(char &c)
 	_exp.pop();
 	switch (c) {
 		case '+':
-			res = a + b;
+			res = b + a;
 			break ;
 		case '-':
-			if (b > a)
-				res = b - a;
-			else
-				res = a - b;
+			res = b - a;
 			break ;
 		case '*':
-			res = a * b;
+			res = b * a;
 			break ;
 		case '/':
-			res = a / b;
+			if (a == 0)
+			{
+				std::cerr << "Error: division by zero";
+				break ;
+			}
+			res = b / a;
 			break ;
 	}
 	_exp.push(res);
