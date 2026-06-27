@@ -1,0 +1,18 @@
+42 24 12 98 9 30
+[42 24]
+[12 98]
+[9 30]
+winners = 42, 98, 30 (size 3 - go down)
+losers  = 24, 12, 9 |||| WAITING
+-- winners = 30, 42, 98
+-- jacobsthal -> *9*, 30, 42, 98
+-- jacobsthal -> 9, *24*, 30, 42, 98
+-- jacobsthal -> 9, 12, 24, 30, 42, 98
+
+
+42 98 30 -> straggler = 30
+[98 42]
+winners = 98 (size 1 - roll back)
+losers  = 42 |||| WAITING
+- jacobsthal -> [42, 98]
+- jacobsthal -> winners = *30*, 42, 98, 
