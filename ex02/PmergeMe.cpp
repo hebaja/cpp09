@@ -18,6 +18,21 @@ std::string	stringfy(int argc, char **argv)
 	return (str);
 }
 
+std::deque<unsigned int> convertToDeque(int argc, char **argv)
+{
+	int							tmp;
+	std::string					str;
+	std::deque<unsigned int>	numbers;
+
+	str = stringfy(argc, argv);
+	if (str.find_last_not_of("0123456789 ") != std::string::npos)
+		throw std::runtime_error("Error");
+	std::stringstream	iss(str);
+	while (iss >> tmp)
+		numbers.push_back(tmp);
+	return (numbers);
+}
+
 std::vector<unsigned int> convertToVector(int argc, char **argv)
 {
 	int							tmp;
@@ -135,11 +150,12 @@ std::vector<unsigned int> doFordJonhson(std::vector<unsigned int> list)
 	return (winners);
 }
 
-void	showList(std::vector<unsigned int> &alist)
+template <typename T>
+void	showList(T list)
 {
-	std::vector<unsigned int>::iterator last = alist.end(); 
+	typename T::iterator last = list.end(); 
 	--last;
-	for (std::vector<unsigned int>::iterator it = alist.begin(); it != alist.end(); ++it) {
+	for (typename T::iterator it = list.begin(); it != list.end(); ++it) {
 		std::cout << *it;
 		if (it != last)
 			std::cout << " ";
@@ -147,16 +163,19 @@ void	showList(std::vector<unsigned int> &alist)
 	std::cout << std::endl;
 }
 
-PmergeMe::PmergeMe() : _alist(){}
+PmergeMe::PmergeMe() : _alist(), _blist() {}
 
-PmergeMe::PmergeMe(int argc, char **argv) : _alist(convertToVector(argc, argv)), _pairs(pairing(_alist)) {}
+PmergeMe::PmergeMe(int argc, char **argv) : _alist(convertToVector(argc, argv)), _blist(convertToDeque(argc, argv)) {}
 
-PmergeMe::PmergeMe(const PmergeMe &other) : _alist(other._alist) {}
+PmergeMe::PmergeMe(const PmergeMe &other) : _alist(other._alist), _blist(other._blist) {}
 
 PmergeMe &PmergeMe::operator=(const PmergeMe &other)
 {
 	if (this != &other)
+	{
 		this->_alist = other._alist;
+		this->_blist = other._blist;
+	}
 	return (*this);
 }
 
@@ -184,4 +203,9 @@ void	PmergeMe::showAfterSort()
 
 	std::cout << "Time to process a range of " << asorted.size() << " elements with std::vector : " <<
 	std::fixed << std::setprecision(6) << us << " us" << std::endl;
+
+
+
+	
+
 }

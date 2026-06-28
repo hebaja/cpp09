@@ -1,8 +1,8 @@
 #pragma  once
 
+#include <deque>
 #include <vector>
 #include <iostream>
-#include <stdexcept>
 
 struct Pair
 {
@@ -31,7 +31,7 @@ class PmergeMe
 {
 private:
 	std::vector<unsigned int>	_alist;
-	std::vector<Pair>			_pairs;
+	std::deque<unsigned int>	_blist;
 
 public:
 	PmergeMe();
