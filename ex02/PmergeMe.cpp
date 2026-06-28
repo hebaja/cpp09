@@ -62,7 +62,7 @@ void	sortPairs(std::vector<Pair> &pairs)
 	}
 }
 
-std::vector<unsigned int> doJacobsthal(unsigned int n)
+std::vector<unsigned int> buildJacobsthal(unsigned int n)
 {
     std::vector<unsigned int> jacobsthal;
     jacobsthal.push_back(0);
@@ -72,12 +72,34 @@ std::vector<unsigned int> doJacobsthal(unsigned int n)
     return (jacobsthal);
 }
 
+void	insertPending(std::vector<unsigned int> &pending, std::vector<unsigned int> &winners, std::vector<unsigned int> &jacobsthal)
+{
+	for (std::vector<unsigned int>::iterator it = jacobsthal.begin(); it != jacobsthal.end(); ++it)
+	{
+		unsigned int idx = *it;
+		if (idx == 0 || idx > pending.size())
+			continue;
+		std::vector<unsigned int>::iterator pos = std::lower_bound(winners.begin(), winners.end(), pending[idx - 1]);
+		winners.insert(pos, pending[idx - 1]);
+		pending.erase(pending.begin() + (idx - 1));
+	}
+}
+
+void	insertPendingRest(std::vector<unsigned int> &pending, std::vector<unsigned int> &winners)
+{
+	for (std::vector<unsigned int>::iterator it = pending.begin(); it != pending.end(); ++it)
+	{
+		std::vector<unsigned int>::iterator pos = std::lower_bound(winners.begin(), winners.end(), *it);
+		winners.insert(pos, *it);
+	}
+}
 
 std::vector<unsigned int> doFordJonhson(std::vector<unsigned int> list)
 {
 	std::vector<unsigned int> winners;
 	std::vector<unsigned int> losers;
 	std::vector<unsigned int> jacobsthal;
+	std::vector<unsigned int> pending;
 
 	if (list.size() <= 1)
 		return (list);
@@ -94,33 +116,19 @@ std::vector<unsigned int> doFordJonhson(std::vector<unsigned int> list)
 		winners.push_back(it->a);
 		losers.push_back(it->b);
 	}
+
 	winners = doFordJonhson(winners);
+	pending = losers;
+	jacobsthal = buildJacobsthal(pending.size());
 
-	std::vector<unsigned int> pending = losers;
-	jacobsthal = doJacobsthal(pending.size());
-
-	for (std::vector<unsigned int>::iterator it = jacobsthal.begin(); it != jacobsthal.end(); ++it)
-	{
-		unsigned int idx = *it;
-		if (idx == 0 || idx > pending.size())
-			continue;
-		std::vector<unsigned int>::iterator pos = std::lower_bound(winners.begin(), winners.end(), pending[idx - 1]);
-		winners.insert(pos, pending[idx - 1]);
-		pending.erase(pending.begin() + (idx - 1));
-	}
-
-	for (std::vector<unsigned int>::iterator it = pending.begin(); it != pending.end(); ++it)
-	{
-		std::vector<unsigned int>::iterator pos = std::lower_bound(winners.begin(), winners.end(), *it);
-		winners.insert(pos, *it);
-	}
+	insertPending(pending, winners, jacobsthal);
+	insertPendingRest(pending, winners);
 
 	if (hasStraggler)
 	{
 		std::vector<unsigned int>::iterator pos = std::lower_bound(winners.begin(), winners.end(), straggler);
 		winners.insert(pos, straggler);
 	}
-
 	return (winners);
 }
 
