@@ -99,9 +99,9 @@ std::vector<unsigned int> doFordJonhson(std::vector<unsigned int> list)
 	std::vector<unsigned int> pending = losers;
 	jacobsthal = doJacobsthal(pending.size());
 
-	for (int i = static_cast<int>(jacobsthal.size()) - 1; i >= 0; --i)
+	for (std::vector<unsigned int>::iterator it = jacobsthal.begin(); it != jacobsthal.end(); ++it)
 	{
-		unsigned int idx = jacobsthal[i];
+		unsigned int idx = *it;
 		if (idx == 0 || idx > pending.size())
 			continue;
 		std::vector<unsigned int>::iterator pos = std::lower_bound(winners.begin(), winners.end(), pending[idx - 1]);
@@ -109,10 +109,10 @@ std::vector<unsigned int> doFordJonhson(std::vector<unsigned int> list)
 		pending.erase(pending.begin() + (idx - 1));
 	}
 
-	for (int i = static_cast<int>(pending.size()) - 1; i >= 0; --i)
+	for (std::vector<unsigned int>::iterator it = pending.begin(); it != pending.end(); ++it)
 	{
-		std::vector<unsigned int>::iterator pos = std::lower_bound(winners.begin(), winners.end(), pending[i]);
-		winners.insert(pos, pending[i]);
+		std::vector<unsigned int>::iterator pos = std::lower_bound(winners.begin(), winners.end(), *it);
+		winners.insert(pos, *it);
 	}
 
 	if (hasStraggler)
