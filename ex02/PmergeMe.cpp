@@ -34,7 +34,11 @@ T convertToContainer(int argc, char **argv)
 	return (numbers);
 }
 
-std::vector<Pair> pairing(std::vector<unsigned int> &list)
+/* *** *** *** *** *** *** ***  */
+/* *** VECTOR SECTION START *** */
+/* *** *** *** *** *** *** ***  */
+
+std::vector<Pair> vecPairing(std::vector<unsigned int> &list)
 {
 	std::vector<Pair>	pairs;
 
@@ -53,7 +57,7 @@ std::vector<Pair> pairing(std::vector<unsigned int> &list)
 	return (pairs);
 }
 
-void	sortPairs(std::vector<Pair> &pairs)
+void	sortVecPairs(std::vector<Pair> &pairs)
 {
 	for (std::vector<Pair>::iterator it = pairs.begin(); it != pairs.end(); ++it)
 	{
@@ -66,7 +70,7 @@ void	sortPairs(std::vector<Pair> &pairs)
 	}
 }
 
-std::vector<unsigned int> buildJacobsthal(unsigned int n)
+std::vector<unsigned int> buildVecJacobsthal(unsigned int n)
 {
     std::vector<unsigned int> jacobsthal;
     jacobsthal.push_back(0);
@@ -76,7 +80,7 @@ std::vector<unsigned int> buildJacobsthal(unsigned int n)
     return (jacobsthal);
 }
 
-void	insertPending(std::vector<unsigned int> &pending, std::vector<unsigned int> &winners, std::vector<unsigned int> &jacobsthal)
+void	insertVecPending(std::vector<unsigned int> &pending, std::vector<unsigned int> &winners, std::vector<unsigned int> &jacobsthal)
 {
 	for (std::vector<unsigned int>::iterator it = jacobsthal.begin(); it != jacobsthal.end(); ++it)
 	{
@@ -89,7 +93,7 @@ void	insertPending(std::vector<unsigned int> &pending, std::vector<unsigned int>
 	}
 }
 
-void	insertPendingRest(std::vector<unsigned int> &pending, std::vector<unsigned int> &winners)
+void	insertVecPendingRest(std::vector<unsigned int> &pending, std::vector<unsigned int> &winners)
 {
 	for (std::vector<unsigned int>::iterator it = pending.begin(); it != pending.end(); ++it)
 	{
@@ -98,7 +102,7 @@ void	insertPendingRest(std::vector<unsigned int> &pending, std::vector<unsigned 
 	}
 }
 
-std::vector<unsigned int> doFordJonhson(std::vector<unsigned int> list)
+std::vector<unsigned int> doVecFordJohnson(std::vector<unsigned int> list)
 {
 	std::vector<unsigned int> winners;
 	std::vector<unsigned int> losers;
@@ -113,20 +117,20 @@ std::vector<unsigned int> doFordJonhson(std::vector<unsigned int> list)
 	if (hasStraggler)
 		straggler = list.back();
 
-	std::vector<Pair> pairs = pairing(list);
-	sortPairs(pairs);
+	std::vector<Pair> pairs = vecPairing(list);
+	sortVecPairs(pairs);
 	for (std::vector<Pair>::iterator it = pairs.begin(); it != pairs.end(); ++it)
 	{
 		winners.push_back(it->a);
 		losers.push_back(it->b);
 	}
 
-	winners = doFordJonhson(winners);
+	winners = doVecFordJohnson(winners);
 	pending = losers;
-	jacobsthal = buildJacobsthal(pending.size());
+	jacobsthal = buildVecJacobsthal(pending.size());
 
-	insertPending(pending, winners, jacobsthal);
-	insertPendingRest(pending, winners);
+	insertVecPending(pending, winners, jacobsthal);
+	insertVecPendingRest(pending, winners);
 
 	if (hasStraggler)
 	{
@@ -135,6 +139,120 @@ std::vector<unsigned int> doFordJonhson(std::vector<unsigned int> list)
 	}
 	return (winners);
 }
+
+/* *** *** *** *** *** *** *** */
+/* *** VECTOR SECTION END ***  */
+/* *** *** *** *** *** *** *** */
+
+/* *** *** *** *** *** *** *** */
+/* *** DEQUE SECTION START *** */
+/* *** *** *** *** *** *** *** */
+
+std::deque<Pair> deqPairing(std::deque<unsigned int> &list)
+{
+	std::deque<Pair>	pairs;
+
+	for (std::deque<unsigned int>::iterator it = list.begin(); it != list.end(); ++it)
+	{
+		std::deque<unsigned int>::iterator	next_it = it;
+		++next_it;
+		if (next_it == list.end())
+			continue ;
+		Pair p;
+		p.a = *it;
+		p.b = *next_it;
+		pairs.push_back(p);
+		++it;
+	}
+	return (pairs);
+}
+
+void	sortDeqPairs(std::deque<Pair> &pairs)
+{
+	for (std::deque<Pair>::iterator it = pairs.begin(); it != pairs.end(); ++it)
+	{
+		if (it->a < it->b)
+		{
+			unsigned int	tmp = it->a;
+			it->a = it->b;
+			it->b = tmp;
+		}
+	}
+}
+
+std::deque<unsigned int> buildDeqJacobsthal(unsigned int n)
+{
+    std::deque<unsigned int> jacobsthal;
+    jacobsthal.push_back(0);
+    jacobsthal.push_back(1);
+    while (jacobsthal.back() < n)
+        jacobsthal.push_back(jacobsthal[jacobsthal.size() - 1] + 2 * jacobsthal[jacobsthal.size() - 2]);
+    return (jacobsthal);
+}
+
+void	insertDeqPending(std::deque<unsigned int> &pending, std::deque<unsigned int> &winners, std::deque<unsigned int> &jacobsthal)
+{
+	for (std::deque<unsigned int>::iterator it = jacobsthal.begin(); it != jacobsthal.end(); ++it)
+	{
+		unsigned int idx = *it;
+		if (idx == 0 || idx > pending.size())
+			continue;
+		std::deque<unsigned int>::iterator pos = std::lower_bound(winners.begin(), winners.end(), pending[idx - 1]);
+		winners.insert(pos, pending[idx - 1]);
+		pending.erase(pending.begin() + (idx - 1));
+	}
+}
+
+void	insertDeqPendingRest(std::deque<unsigned int> &pending, std::deque<unsigned int> &winners)
+{
+	for (std::deque<unsigned int>::iterator it = pending.begin(); it != pending.end(); ++it)
+	{
+		std::deque<unsigned int>::iterator pos = std::lower_bound(winners.begin(), winners.end(), *it);
+		winners.insert(pos, *it);
+	}
+}
+
+std::deque<unsigned int> doDeqFordJohnson(std::deque<unsigned int> list)
+{
+	std::deque<unsigned int> winners;
+	std::deque<unsigned int> losers;
+	std::deque<unsigned int> jacobsthal;
+	std::deque<unsigned int> pending;
+
+	if (list.size() <= 1)
+		return (list);
+
+	unsigned int straggler = 0;
+	bool hasStraggler = (list.size() % 2 != 0);
+	if (hasStraggler)
+		straggler = list.back();
+
+	std::deque<Pair> pairs = deqPairing(list);
+	sortDeqPairs(pairs);
+	for (std::deque<Pair>::iterator it = pairs.begin(); it != pairs.end(); ++it)
+	{
+		winners.push_back(it->a);
+		losers.push_back(it->b);
+	}
+
+	winners = doDeqFordJohnson(winners);
+	pending = losers;
+	jacobsthal = buildDeqJacobsthal(pending.size());
+
+	insertDeqPending(pending, winners, jacobsthal);
+	insertDeqPendingRest(pending, winners);
+
+	if (hasStraggler)
+	{
+		std::deque<unsigned int>::iterator pos = std::lower_bound(winners.begin(), winners.end(), straggler);
+		winners.insert(pos, straggler);
+	}
+	return (winners);
+}
+
+/* *** *** *** *** *** *** *** */
+/* *** DEQUE SECTION END ***   */
+/* *** *** *** *** *** *** *** */
 
 template <typename T>
 void	showList(T list)
@@ -175,25 +293,33 @@ void	PmergeMe::showBeforeSort()
 	showList(_alist);
 }
 
+template <typename T>
+void	showAfter(T &sortList, struct timespec &ts_start, struct timespec &ts_end, std::string containerName)
+{
+	double	us;
+
+	us = (ts_end.tv_sec - ts_start.tv_sec) + (ts_end.tv_nsec - ts_start.tv_nsec) / 1e9;
+
+	std::cout << "Time to process a range of " << sortList.size() << " elements with " << containerName << " : " <<
+	std::fixed << std::setprecision(6) << us << " us" << std::endl;
+}
+
 void	PmergeMe::showAfterSort()
 {
-	double						us;
-	struct timespec				ts_start, ts_end;
+	struct timespec				a_ts_start, a_ts_end, b_ts_start, b_ts_end;
 	std::vector<unsigned int>	asorted;
+	std::deque<unsigned int>	bsorted;
 
-	clock_gettime(CLOCK_MONOTONIC, &ts_start);
-	asorted = doFordJonhson(_alist);
-	clock_gettime(CLOCK_MONOTONIC, &ts_end);
+	clock_gettime(CLOCK_MONOTONIC, &a_ts_start);
+	asorted = doVecFordJohnson(_alist);
+	clock_gettime(CLOCK_MONOTONIC, &a_ts_end);
+	
+	clock_gettime(CLOCK_MONOTONIC, &b_ts_start);
+	bsorted = doDeqFordJohnson(_blist);
+	clock_gettime(CLOCK_MONOTONIC, &b_ts_end);
 
 	std::cout << "After:  ";
 	showList(asorted);
-	us = (ts_end.tv_sec - ts_start.tv_sec) + (ts_end.tv_nsec - ts_start.tv_nsec) / 1e9;
-
-	std::cout << "Time to process a range of " << asorted.size() << " elements with std::vector : " <<
-	std::fixed << std::setprecision(6) << us << " us" << std::endl;
-
-
-
-	
-
+	showAfter(asorted, a_ts_start, a_ts_end, "std::vector");
+	showAfter(bsorted, b_ts_start, b_ts_end, "std::deque");
 }
