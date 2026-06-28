@@ -18,26 +18,12 @@ std::string	stringfy(int argc, char **argv)
 	return (str);
 }
 
-std::deque<unsigned int> convertToDeque(int argc, char **argv)
+template <typename T>
+T convertToContainer(int argc, char **argv)
 {
 	int							tmp;
 	std::string					str;
-	std::deque<unsigned int>	numbers;
-
-	str = stringfy(argc, argv);
-	if (str.find_last_not_of("0123456789 ") != std::string::npos)
-		throw std::runtime_error("Error");
-	std::stringstream	iss(str);
-	while (iss >> tmp)
-		numbers.push_back(tmp);
-	return (numbers);
-}
-
-std::vector<unsigned int> convertToVector(int argc, char **argv)
-{
-	int							tmp;
-	std::string					str;
-	std::vector<unsigned int>	numbers;
+	T	numbers;
 
 	str = stringfy(argc, argv);
 	if (str.find_last_not_of("0123456789 ") != std::string::npos)
@@ -165,7 +151,9 @@ void	showList(T list)
 
 PmergeMe::PmergeMe() : _alist(), _blist() {}
 
-PmergeMe::PmergeMe(int argc, char **argv) : _alist(convertToVector(argc, argv)), _blist(convertToDeque(argc, argv)) {}
+PmergeMe::PmergeMe(int argc, char **argv)
+	: _alist(convertToContainer<std::vector<unsigned int> >(argc, argv))
+	, _blist(convertToContainer<std::deque<unsigned int> >(argc, argv)) {}
 
 PmergeMe::PmergeMe(const PmergeMe &other) : _alist(other._alist), _blist(other._blist) {}
 
