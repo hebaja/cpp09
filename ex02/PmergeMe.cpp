@@ -1,6 +1,8 @@
 #include "PmergeMe.hpp"
 #include <algorithm>
-#include <iterator>
+#include <ctime>
+#include <iomanip>
+#include <sys/time.h>
 #include <sstream>
 
 std::string	stringfy(int argc, char **argv)
@@ -147,16 +149,7 @@ void	showList(std::vector<unsigned int> &alist)
 
 PmergeMe::PmergeMe() : _alist(){}
 
-PmergeMe::PmergeMe(int argc, char **argv) : _alist(convertToVector(argc, argv)), _pairs(pairing(_alist))
-{
-	// std::vector<unsigned int> n = doFordJonhson(_alist);
-
-	// for (std::vector<unsigned int>::iterator it = n.begin(); it != n.end(); ++it) {
-	// 	std::cout << *it << " ";
-	// }
-	// std::cout << std::endl;
-
-}
+PmergeMe::PmergeMe(int argc, char **argv) : _alist(convertToVector(argc, argv)), _pairs(pairing(_alist)) {}
 
 PmergeMe::PmergeMe(const PmergeMe &other) : _alist(other._alist) {}
 
@@ -177,9 +170,18 @@ void	PmergeMe::showBeforeSort()
 
 void	PmergeMe::showAfterSort()
 {
-	std::vector<unsigned int> asorted;
+	double						us;
+	struct timespec				ts_start, ts_end;
+	std::vector<unsigned int>	asorted;
 
+	clock_gettime(CLOCK_MONOTONIC, &ts_start);
 	asorted = doFordJonhson(_alist);
+	clock_gettime(CLOCK_MONOTONIC, &ts_end);
+
 	std::cout << "After:  ";
 	showList(asorted);
+	us = (ts_end.tv_sec - ts_start.tv_sec) + (ts_end.tv_nsec - ts_start.tv_nsec) / 1e9;
+
+	std::cout << "Time to process a range of " << asorted.size() << " elements with std::vector : " <<
+	std::fixed << std::setprecision(6) << us << " us" << std::endl;
 }
