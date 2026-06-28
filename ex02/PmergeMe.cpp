@@ -1,5 +1,6 @@
 #include "PmergeMe.hpp"
 #include <algorithm>
+#include <iterator>
 #include <sstream>
 
 std::string	stringfy(int argc, char **argv)
@@ -132,16 +133,28 @@ std::vector<unsigned int> doFordJonhson(std::vector<unsigned int> list)
 	return (winners);
 }
 
+void	showList(std::vector<unsigned int> &alist)
+{
+	std::vector<unsigned int>::iterator last = alist.end(); 
+	--last;
+	for (std::vector<unsigned int>::iterator it = alist.begin(); it != alist.end(); ++it) {
+		std::cout << *it;
+		if (it != last)
+			std::cout << " ";
+	}
+	std::cout << std::endl;
+}
+
 PmergeMe::PmergeMe() : _alist(){}
 
 PmergeMe::PmergeMe(int argc, char **argv) : _alist(convertToVector(argc, argv)), _pairs(pairing(_alist))
 {
-	std::vector<unsigned int> n = doFordJonhson(_alist);
+	// std::vector<unsigned int> n = doFordJonhson(_alist);
 
-	for (std::vector<unsigned int>::iterator it = n.begin(); it != n.end(); ++it) {
-		std::cout << *it << " ";
-	}
-	std::cout << std::endl;
+	// for (std::vector<unsigned int>::iterator it = n.begin(); it != n.end(); ++it) {
+	// 	std::cout << *it << " ";
+	// }
+	// std::cout << std::endl;
 
 }
 
@@ -156,10 +169,17 @@ PmergeMe &PmergeMe::operator=(const PmergeMe &other)
 
 PmergeMe::~PmergeMe(){}
 
-void	PmergeMe::showAlist()
+void	PmergeMe::showBeforeSort()
 {
-	for (std::vector<unsigned int>::iterator it = _alist.begin(); it != _alist.end(); ++it) {
-		std::cout << *it << " ";
-	}
-	std::cout << std::endl;
+	std::cout << "Before: ";
+	showList(_alist);
+}
+
+void	PmergeMe::showAfterSort()
+{
+	std::vector<unsigned int> asorted;
+
+	asorted = doFordJonhson(_alist);
+	std::cout << "After:  ";
+	showList(asorted);
 }

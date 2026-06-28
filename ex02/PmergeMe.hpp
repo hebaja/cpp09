@@ -42,10 +42,11 @@ public:
 
 	// void	sortPairs();
 
-	void	showAlist();
-	void	showPairs() {
-		for (std::vector<Pair>::iterator it = _pairs.begin(); it != _pairs.end(); ++it) {
-			std::cout << *it << std::endl;
-		}
-	}
+	void	showBeforeSort();
+	void	showAfterSort();
+	// void	showPairs() {
+	// 	for (std::vector<Pair>::iterator it = _pairs.begin(); it != _pairs.end(); ++it) {
+	// 		std::cout << *it << std::endl;
+	// 	}
+	// }
 };
