@@ -8,8 +8,6 @@ int	main(int argc, char **argv)
 			PmergeMe pm(argc, argv);
 			pm.showBeforeSort();
 			pm.showAfterSort();
-			// pm.showAlist();
-			// pm.showPairs();
 		} catch (std::runtime_error &e) {
 			std::cout << e.what() << std::endl;		
 		}

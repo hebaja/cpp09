@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <ctime>
 #include <iomanip>
+#include <stdexcept>
 #include <sys/time.h>
 #include <sstream>
 
@@ -267,11 +268,21 @@ void	showList(T list)
 	std::cout << std::endl;
 }
 
+void	checkLists(std::vector<unsigned int> alist, std::deque<unsigned int> blist)
+{
+	if (alist.size() == blist.size() && std::equal(alist.begin(), alist.end(), blist.begin()))
+		return ;
+	throw std::runtime_error("Error: lists are different");
+}
+
 PmergeMe::PmergeMe() : _alist(), _blist() {}
 
 PmergeMe::PmergeMe(int argc, char **argv)
 	: _alist(convertToContainer<std::vector<unsigned int> >(argc, argv))
-	, _blist(convertToContainer<std::deque<unsigned int> >(argc, argv)) {}
+	, _blist(convertToContainer<std::deque<unsigned int> >(argc, argv)) 
+{
+	checkLists(_alist, _blist);
+}
 
 PmergeMe::PmergeMe(const PmergeMe &other) : _alist(other._alist), _blist(other._blist) {}
 

@@ -40,13 +40,6 @@ public:
 	PmergeMe& operator=(const PmergeMe &other);
 	~PmergeMe();
 
-	// void	sortPairs();
-
 	void	showBeforeSort();
 	void	showAfterSort();
-	// void	showPairs() {
-	// 	for (std::vector<Pair>::iterator it = _pairs.begin(); it != _pairs.end(); ++it) {
-	// 		std::cout << *it << std::endl;
-	// 	}
-	// }
 };
