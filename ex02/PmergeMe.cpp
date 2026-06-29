@@ -268,11 +268,11 @@ void	showList(T list)
 	std::cout << std::endl;
 }
 
-void	checkLists(std::vector<unsigned int> alist, std::deque<unsigned int> blist)
+void	checkLists(std::vector<unsigned int> alist, std::deque<unsigned int> blist, bool isBefore)
 {
 	if (alist.size() == blist.size() && std::equal(alist.begin(), alist.end(), blist.begin()))
 		return ;
-	throw std::runtime_error("Error: lists are different");
+	throw std::runtime_error(isBefore ? "Error: lists are different" : "Error: lists sorted differently");
 }
 
 PmergeMe::PmergeMe() : _alist(), _blist() {}
@@ -281,7 +281,7 @@ PmergeMe::PmergeMe(int argc, char **argv)
 	: _alist(convertToContainer<std::vector<unsigned int> >(argc, argv))
 	, _blist(convertToContainer<std::deque<unsigned int> >(argc, argv)) 
 {
-	checkLists(_alist, _blist);
+	checkLists(_alist, _blist, true);
 }
 
 PmergeMe::PmergeMe(const PmergeMe &other) : _alist(other._alist), _blist(other._blist) {}
@@ -328,6 +328,8 @@ void	PmergeMe::showAfterSort()
 	clock_gettime(CLOCK_MONOTONIC, &b_ts_start);
 	bsorted = doDeqFordJohnson(_blist);
 	clock_gettime(CLOCK_MONOTONIC, &b_ts_end);
+
+	checkLists(asorted, bsorted, false);
 
 	std::cout << "After:  ";
 	showList(asorted);
