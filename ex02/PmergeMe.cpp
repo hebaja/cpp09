@@ -41,6 +41,7 @@ template <typename T> T convertToContainer(int argc, char **argv)
 std::vector<Pair> vecPairing(UintVec &list)
 {
 	std::vector<Pair> pairs;
+	pairs.reserve(list.size() / 2);
 
 	for (UintVec::iterator it = list.begin(); it != list.end(); ++it)
 	{
@@ -113,6 +114,7 @@ UintVec doVecFordJohnson(UintVec list)
 		straggler = list.back();
 
 	pairs = vecPairing(list);
+	losers.reserve(pairs.size());
 	sortVecPairs(pairs);
 
 	for (std::vector<Pair>::iterator it = pairs.begin(); it != pairs.end(); ++it)
@@ -125,6 +127,7 @@ UintVec doVecFordJohnson(UintVec list)
 	std::vector<bool> inserted(pairs.size(), false);
 
 	winners = doVecFordJohnson(winners);
+	winners.reserve(winners.size() + losers.size());
 
 	for (UintVec::iterator it = jacobsthal.begin(); it != jacobsthal.end(); ++it)
 	{
