@@ -1,10 +1,7 @@
 #include "RPN.hpp"
-#include <cctype>
 #include <iostream>
-#include <stdexcept>
-#include <string>
 
-bool	validateToken(std::string::iterator &next, std::string::iterator end)
+bool validateToken(std::string::iterator &next, std::string::iterator end)
 {
 	++next;
 	if (next != end && *next != ' ')
@@ -15,18 +12,19 @@ bool	validateToken(std::string::iterator &next, std::string::iterator end)
 	return (true);
 }
 
-int	main(int argc, char **argv)
+int main(int argc, char **argv)
 {
 	if (argc == 2)
 	{
-		std::string	input = argv[1];
-		RPN	rpn;
-		std::string		oper = "+-*/";
+		std::string input = argv[1];
+		RPN rpn;
+		std::string oper = "+-*/";
 
-		try {
+		try
+		{
 			for (std::string::iterator it = input.begin(); it != input.end(); ++it)
 			{
-				std::string::iterator	next = it;
+				std::string::iterator next = it;
 				if (std::isdigit(static_cast<unsigned char>(*it)))
 				{
 					if (!validateToken(next, input.end()))
@@ -40,15 +38,17 @@ int	main(int argc, char **argv)
 					rpn.calculate(*it);
 				}
 				else if (*it == ' ')
-					continue ;
+					continue;
 				else
 				{
-					std::cerr << "Error: invalid character" << std::endl; 
+					std::cerr << "Error: invalid character" << std::endl;
 					return (1);
 				}
 			}
 			rpn.showResult();
-		} catch (std::runtime_error &e) {
+		}
+		catch (std::runtime_error &e)
+		{
 			std::cerr << e.what() << std::endl;
 		}
 	}
