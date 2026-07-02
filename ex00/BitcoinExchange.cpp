@@ -1,26 +1,24 @@
 #include "BitcoinExchange.hpp"
-#include <cstddef>
 #include <iostream>
 #include <sstream>
-#include <string>
 
 BitcoinExchange::BitcoinExchange() : _data() {}
 
 BitcoinExchange::BitcoinExchange(const BitcoinExchange &other) : _data(other._data) {}
 
-BitcoinExchange& BitcoinExchange::operator=(const BitcoinExchange &other)
+BitcoinExchange &BitcoinExchange::operator=(const BitcoinExchange &other)
 {
 	if (this != &other)
 		_data = other._data;
 	return (*this);
 }
 
-BitcoinExchange::~BitcoinExchange(){}
+BitcoinExchange::~BitcoinExchange() {}
 
-void	BitcoinExchange::consumeCsv(std::ifstream &file)
+void BitcoinExchange::consumeCsv(std::ifstream &file)
 {
-	double		val;
-	std::string	line;
+	double val;
+	std::string line;
 
 	std::getline(file, line);
 	while (std::getline(file, line))
@@ -33,22 +31,22 @@ void	BitcoinExchange::consumeCsv(std::ifstream &file)
 	}
 }
 
-void	trim(std::string &str)
+void trim(std::string &str)
 {
-    const std::string whitespace = " \t\n\r\f\v";
+	const std::string whitespace = " \t\n\r\f\v";
 
 	std::size_t start = str.find_first_not_of(whitespace);
-    std::size_t end = str.find_last_not_of(whitespace);
+	std::size_t end = str.find_last_not_of(whitespace);
 	if (start != std::string::npos && end != std::string::npos)
 		str = str.substr(start, end - start + 1);
 }
 
-int	parseYear(std::string date)
+int parseYear(std::string date)
 {
-	int			num_year;
-	std::string	str_year;
-	std::size_t	pos = date.find("-");
-	
+	int num_year;
+	std::string str_year;
+	std::size_t pos = date.find("-");
+
 	pos = date.find("-");
 	if (pos != std::string::npos)
 	{
@@ -62,15 +60,15 @@ int	parseYear(std::string date)
 		if (iss >> num_year)
 			return (num_year);
 	}
-	std::cerr << "Error: problem parsing year: " << date <<std::endl;
+	std::cerr << "Error: problem parsing year: " << date << std::endl;
 	return (-1);
 }
 
-int	parseMonth(std::string date)
+int parseMonth(std::string date)
 {
-	int			num_mon;
-	std::string	str_mon;
-	std::size_t	pos;
+	int num_mon;
+	std::string str_mon;
+	std::size_t pos;
 
 	pos = date.find("-");
 	if (pos != std::string::npos)
@@ -92,18 +90,18 @@ int	parseMonth(std::string date)
 	return (-1);
 }
 
-bool	isLeapYear(int year)
+bool isLeapYear(int year)
 {
 	if ((year % 400 == 0) || ((year % 4 == 0) && (year % 100 != 0)))
 		return (true);
 	return (false);
 }
 
-int	parseDay(std::string date, int year, int month)
+int parseDay(std::string date, int year, int month)
 {
-	int			num_day;
-	std::string	str_day;
-	std::size_t	pos;
+	int num_day;
+	std::string str_day;
+	std::size_t pos;
 
 	pos = date.find("-");
 	if (pos != std::string::npos)
@@ -143,11 +141,11 @@ int	parseDay(std::string date, int year, int month)
 	return (-1);
 }
 
-bool	parseDate(std::string date)
+bool parseDate(std::string date)
 {
-	int	year;
-	int	month;
-	int	day;
+	int year;
+	int month;
+	int day;
 
 	year = parseYear(date);
 	if (year < 0)
@@ -158,13 +156,13 @@ bool	parseDate(std::string date)
 	day = parseDay(date, year, month);
 	if (day < 0)
 		return (false);
-	
+
 	return (true);
 }
 
-double	parseValue(std::string value)
+double parseValue(std::string value)
 {
-	double	num_value;
+	double num_value;
 
 	std::istringstream iss(value);
 	if (iss >> num_value)
@@ -181,18 +179,18 @@ double	parseValue(std::string value)
 	return (-1);
 }
 
-void	BitcoinExchange::treatInput(std::ifstream &file)
+void BitcoinExchange::treatInput(std::ifstream &file)
 {
-	std::string	line;
-	std::string	date;
-	std::string	value;
-	double		num_value;
+	std::string line;
+	std::string date;
+	std::string value;
+	double num_value;
 
 	std::getline(file, line);
 	while (std::getline(file, line))
 	{
-		std::size_t	pos = line.find("|");
-		
+		std::size_t pos = line.find("|");
+
 		if (pos != std::string::npos)
 		{
 			date = line.substr(0, pos);
@@ -200,15 +198,15 @@ void	BitcoinExchange::treatInput(std::ifstream &file)
 			trim(date);
 			trim(value);
 			if (!parseDate(date))
-				continue ;
+				continue;
 			num_value = parseValue(value);
 			if (num_value < 0)
-				continue ;
+				continue;
 		}
 		else
 		{
 			std::cerr << "Error: bad input => " << line << std::endl;
-			continue ;
+			continue;
 		}
 		std::map<std::string, double>::iterator it = _data.upper_bound(date);
 		if (it != _data.begin())
