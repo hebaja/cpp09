@@ -350,10 +350,9 @@ void showAfter(T &sortList, struct timespec &ts_start, struct timespec &ts_end, 
 {
 	double us;
 
-	us = (ts_end.tv_sec - ts_start.tv_sec) + (ts_end.tv_nsec - ts_start.tv_nsec) / 1e9;
-
+	us = (ts_end.tv_sec - ts_start.tv_sec) * 1e9 + (ts_end.tv_nsec - ts_start.tv_nsec) / 1e3;
 	std::cout << "Time to process a range of " << sortList.size() << " elements with " << containerName << " : "
-	          << std::fixed << std::setprecision(6) << us << " us" << std::endl;
+	          << std::fixed << std::setprecision(5) << us << " us" << std::endl;
 }
 
 void PmergeMe::showAfterSort()
