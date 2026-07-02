@@ -23,11 +23,6 @@ struct Pair {
   bool operator<(const Pair &other) const { return (a < other.a); }
 };
 
-inline std::ostream &operator<<(std::ostream &os, const Pair &p) {
-  os << p[0] << " " << p[1];
-  return os;
-}
-
 typedef std::vector<unsigned int> UintVec;
 typedef std::deque<unsigned int> UintDeq;
 
